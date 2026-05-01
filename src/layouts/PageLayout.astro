@@ -5,6 +5,7 @@ import Footer from '~/components/widgets/Footer.astro';
 import Announcement from '~/components/widgets/Announcement.astro';
 import FloatingContact from '~/components/common/FloatingContact.astro';
 import ScrollToTop from '~/components/common/ScrollToTop.astro';
+import NewsletterModal from '~/components/common/NewsletterModal.astro';
 
 import { headerData, footerData } from '~/navigation';
 
@@ -32,4 +33,5 @@ const { metadata } = Astro.props;
   </slot>
   <FloatingContact />
   <ScrollToTop />
+  <NewsletterModal />
 </Layout>

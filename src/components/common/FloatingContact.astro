@@ -20,12 +20,12 @@ import { SITE_DATA } from '~/site-config';
     </a>
   )}
   {SITE_DATA?.client?.email && (
-    <a 
-      href={`mailto:${SITE_DATA.client.email}`} 
-      class="flex h-12 w-12 items-center justify-center rounded-l-xl bg-gray-800 text-white shadow-lg transition-transform hover:-translate-x-1 dark:bg-gray-700" 
+    <button 
+      onclick="window.openNewsletterModal()" 
+      class="flex h-12 w-12 items-center justify-center rounded-l-xl bg-gray-800 text-white shadow-lg transition-transform hover:-translate-x-1 dark:bg-gray-700 cursor-pointer" 
       aria-label="Email Us"
     >
       <Icon name="tabler:mail" class="h-6 w-6" />
-    </a>
+    </button>
   )}
 </div>

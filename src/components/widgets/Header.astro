@@ -148,11 +148,11 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
               </a>
             )}
             {SITE_DATA?.client?.email && (
-              <a href={`mailto:${SITE_DATA.client.email}`} class="flex items-center gap-1.5 text-muted hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors" aria-label="Email Us">
+              <button onclick="window.openNewsletterModal()" class="flex items-center gap-1.5 text-muted hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer" aria-label="Email Us">
                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
                   <Icon name="tabler:mail" class="w-4 h-4" />
                 </div>
-              </a>
+              </button>
             )}
           </div>
           {showToggleTheme && <ToggleTheme iconClass="w-6 h-6 md:w-5 md:h-5 md:inline-block" />}
