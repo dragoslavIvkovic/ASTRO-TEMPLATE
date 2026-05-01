@@ -3,6 +3,8 @@ import Layout from '~/layouts/Layout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Footer from '~/components/widgets/Footer.astro';
 import Announcement from '~/components/widgets/Announcement.astro';
+import FloatingContact from '~/components/common/FloatingContact.astro';
+import ScrollToTop from '~/components/common/ScrollToTop.astro';
 
 import { headerData, footerData } from '~/navigation';
 
@@ -28,4 +30,6 @@ const { metadata } = Astro.props;
   <slot name="footer">
     <Footer {...footerData} />
   </slot>
+  <FloatingContact />
+  <ScrollToTop />
 </Layout>
