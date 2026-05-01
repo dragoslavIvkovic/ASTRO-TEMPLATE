@@ -7,16 +7,11 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
   const data = await request.formData();
   const email = data.get('email');
-  const confirmEmail = data.get('confirmEmail');
   const interests = data.get('interests');
 
   // Server-side validation
-  if (!email || !confirmEmail || !interests) {
+  if (!email || !interests) {
     return new Response(JSON.stringify({ message: 'Missing required fields' }), { status: 400 });
-  }
-
-  if (email !== confirmEmail) {
-    return new Response(JSON.stringify({ message: 'Emails do not match' }), { status: 400 });
   }
 
   const resendApiKey = import.meta.env.RESEND_API_KEY;
