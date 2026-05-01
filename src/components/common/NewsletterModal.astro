@@ -143,6 +143,7 @@ import { Icon } from 'astro-icon/components';
   // Handle form submission using Astro Actions
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('--- Newsletter Client Start ---');
 
     // Loading state
     submitBtn.disabled = true;
@@ -151,14 +152,17 @@ import { Icon } from 'astro-icon/components';
     formMessage!.classList.add('hidden');
 
     const formData = new FormData(form);
+    console.log('Sending action to server...');
 
     const { data, error } = await actions.send(formData);
 
     if (error) {
+      console.error('Action Error:', error);
       formMessage!.textContent = `Error: ${error.message}`;
       formMessage!.className = 'text-center text-sm font-medium text-red-600 dark:text-red-400 mt-4';
       formMessage!.classList.remove('hidden');
     } else {
+      console.log('Action Success:', data);
       formMessage!.textContent = 'Thank you for subscribing! ✅';
       formMessage!.className = 'text-center text-sm font-medium text-green-600 dark:text-green-400 mt-4';
       formMessage!.classList.remove('hidden');
