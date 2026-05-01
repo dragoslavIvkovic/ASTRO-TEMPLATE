@@ -179,6 +179,6 @@ export const footerData = {
     { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
   ],
   footNote: `
-    Made by <a class="text-blue-600 underline dark:text-muted" href="https://github.com/arthelokyo"> Arthelokyo</a> · All rights reserved.
+    Built by <a class="text-blue-600 underline dark:text-muted" href="https://createwebplace.com/" target="_blank"> CreateWebPlace</a> · Professional Web Solutions for your Business.
   `,
 };
