@@ -43,7 +43,8 @@ export const SITE_DATA = {
 
   // Forms & Integrations
   forms: {
-    recipientEmail: 'leads@clientbusiness.com',
+    // 'recipientEmail' je adresa na koju želiš da ti stižu upiti sa kontakt forme
+    recipientEmail: 'dragoslav.m.ivkovic@gmail.com',
   },
 
   // Call to Action

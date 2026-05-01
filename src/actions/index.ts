@@ -28,6 +28,7 @@ export const server = {
       try {
         const { data, error } = await resend.emails.send({
           from: "Create Web Place <info@createwebplace.com>",
+          // 'to' je adresa na koju želiš da ti stižu upiti sa kontakt forme
           to: [SITE_DATA.forms.recipientEmail],
           subject: `New Newsletter Subscription: ${SITE_DATA.client.name}`,
           html: `
