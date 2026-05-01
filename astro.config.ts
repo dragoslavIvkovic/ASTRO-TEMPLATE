@@ -2,7 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
+import node from '@astrojs/node';
 
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@tailwindcss/vite';
@@ -25,7 +25,7 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 
 export default defineConfig({
   output: 'static',
-  adapter: cloudflare(),
+  adapter: node({ mode: 'standalone' }),
 
   integrations: [
 
