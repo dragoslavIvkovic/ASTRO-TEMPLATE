@@ -4,7 +4,7 @@ import { Icon } from 'astro-icon/components';
 
 <dialog id="newsletter-modal" class="p-0 rounded-2xl shadow-2xl backdrop:backdrop-blur-sm bg-transparent border-none outline-none overflow-visible">
   <div class="relative bg-white dark:bg-slate-900 w-[95vw] max-w-md p-8 rounded-2xl border border-gray-100 dark:border-slate-800">
-    <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Close">
+    <button id="close-modal" type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Close">
       <Icon name="tabler:x" class="w-6 h-6" />
     </button>
 
@@ -13,46 +13,62 @@ import { Icon } from 'astro-icon/components';
       <p class="text-gray-600 dark:text-slate-400">Stay updated with our latest news and offers.</p>
     </div>
 
-    <form id="newsletter-form" class="space-y-4">
+    <form id="newsletter-form" method="POST" action="/_actions/send" class="space-y-4">
       <div>
         <label for="news-email" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Email Address</label>
-        <input 
-          type="email" 
-          id="news-email" 
-          name="email" 
-          required 
+        <input
+          type="email"
+          id="news-email"
+          name="email"
+          required
+          autocomplete="email"
           placeholder="you@example.com"
-          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all"
+          aria-describedby="email-error"
+          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
         />
-        <span class="error-msg hidden text-xs text-red-500 mt-1">Please enter a valid email.</span>
+        <span id="email-error" class="error-msg hidden text-xs text-red-500 mt-1" role="alert">Please enter a valid email.</span>
       </div>
 
-
+      <div>
+        <label for="confirm-email" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Confirm Email</label>
+        <input
+          type="email"
+          id="confirm-email"
+          name="confirmEmail"
+          required
+          autocomplete="email"
+          placeholder="Repeat email address"
+          aria-describedby="confirm-error"
+          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+        />
+        <span id="confirm-error" class="error-msg hidden text-xs text-red-500 mt-1" role="alert">Emails must match.</span>
+      </div>
 
       <div>
         <label for="interests" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">What are you interested in?</label>
-        <textarea 
-          id="interests" 
-          name="interests" 
-          rows="3" 
+        <textarea
+          id="interests"
+          name="interests"
+          rows="3"
           required
           placeholder="Tell us a bit about what you'd like to hear from us..."
-          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
+          aria-describedby="interests-error"
+          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
         ></textarea>
-        <span class="error-msg hidden text-xs text-red-500 mt-1">This field is required.</span>
+        <span id="interests-error" class="error-msg hidden text-xs text-red-500 mt-1" role="alert">Please describe your interests (min 5 characters).</span>
       </div>
 
-      <button 
-        type="submit" 
-        id="submit-btn" 
+      <button
+        type="submit"
+        id="submit-btn"
         disabled
-        class="w-full py-4 px-6 rounded-lg bg-primary text-white font-bold text-lg shadow-lg hover:shadow-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+        class="w-full py-4 px-6 rounded-lg bg-blue-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
       >
         <span id="btn-text">Subscribe Now</span>
         <Icon id="btn-loader" name="tabler:loader-2" class="w-5 h-5 animate-spin hidden" />
       </button>
 
-      <p id="form-message" class="text-center text-sm font-medium hidden"></p>
+      <p id="form-message" class="text-center text-sm font-medium hidden" role="status"></p>
     </form>
   </div>
 </dialog>
@@ -86,6 +102,8 @@ import { Icon } from 'astro-icon/components';
 </style>
 
 <script>
+  import { actions } from 'astro:actions';
+
   const modal = document.getElementById('newsletter-modal') as HTMLDialogElement;
   const closeBtn = document.getElementById('close-modal');
   const form = document.getElementById('newsletter-form') as HTMLFormElement;
@@ -94,76 +112,91 @@ import { Icon } from 'astro-icon/components';
   const btnLoader = document.getElementById('btn-loader');
   const formMessage = document.getElementById('form-message');
 
-  const inputs = {
-    email: document.getElementById('news-email') as HTMLInputElement,
-    interests: document.getElementById('interests') as HTMLTextAreaElement
-  };
+  const emailInput = document.getElementById('news-email') as HTMLInputElement;
+  const confirmInput = document.getElementById('confirm-email') as HTMLInputElement;
+  const interestsInput = document.getElementById('interests') as HTMLTextAreaElement;
+
+  const emailError = document.getElementById('email-error');
+  const confirmError = document.getElementById('confirm-error');
+  const interestsError = document.getElementById('interests-error');
+
+  const emailRegex = /^\S+@\S+\.\S+$/;
 
   const validate = () => {
-    const emailValid = inputs.email.value && /^\S+@\S+\.\S+$/.test(inputs.email.value);
-    const interestsValid = inputs.interests.value.length > 5;
+    const emailValid = emailInput.value && emailRegex.test(emailInput.value);
+    const emailsMatch = emailInput.value === confirmInput.value;
+    const interestsValid = interestsInput.value.length >= 5;
 
-    // Email validation visual feedback
-    if (inputs.email.value && !emailValid) {
-      inputs.email.nextElementSibling?.classList.remove('hidden');
+    // Visual feedback
+    if (emailInput.value && !emailValid) {
+      emailError?.classList.remove('hidden');
     } else {
-      inputs.email.nextElementSibling?.classList.add('hidden');
+      emailError?.classList.add('hidden');
     }
 
-    submitBtn.disabled = !(emailValid && interestsValid);
+    if (confirmInput.value && !emailsMatch) {
+      confirmError?.classList.remove('hidden');
+    } else {
+      confirmError?.classList.add('hidden');
+    }
+
+    if (interestsInput.value && !interestsValid) {
+      interestsError?.classList.remove('hidden');
+    } else {
+      interestsError?.classList.add('hidden');
+    }
+
+    submitBtn.disabled = !(emailValid && emailsMatch && interestsValid);
   };
 
-  Object.values(inputs).forEach(input => {
-    input.addEventListener('input', validate);
-  });
+  emailInput.addEventListener('input', validate);
+  confirmInput.addEventListener('input', validate);
+  interestsInput.addEventListener('input', validate);
 
   closeBtn?.addEventListener('click', () => modal.close());
-  
+
   // Close on backdrop click
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.close();
   });
 
+  // Handle form submission using Astro Actions
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // UI Loading state
+
+    // Loading state
     submitBtn.disabled = true;
     btnText!.textContent = 'Sending...';
     btnLoader!.classList.remove('hidden');
     formMessage!.classList.add('hidden');
 
-    try {
-      const formData = new FormData(form);
-      const response = await fetch('/api/newsletter', {
-        method: 'POST',
-        body: formData
-      });
+    const formData = new FormData(form);
 
-      const result = await response.json();
+    const { data, error } = await actions.send(formData);
 
-      if (response.ok) {
-        formMessage!.textContent = 'Thank you for subscribing! Check your email soon.';
-        formMessage!.className = 'text-center text-sm font-medium text-green-600 dark:text-green-400 mt-4';
-        formMessage!.classList.remove('hidden');
-        form.reset();
-        setTimeout(() => modal.close(), 3000);
-      } else {
-        throw new Error(result.message || 'Something went wrong');
-      }
-    } catch (err: any) {
-      formMessage!.textContent = `Error: ${err.message}`;
+    if (error) {
+      formMessage!.textContent = `Error: ${error.message}`;
       formMessage!.className = 'text-center text-sm font-medium text-red-600 dark:text-red-400 mt-4';
       formMessage!.classList.remove('hidden');
-    } finally {
-      submitBtn.disabled = false;
-      btnText!.textContent = 'Subscribe Now';
-      btnLoader!.classList.add('hidden');
+    } else {
+      formMessage!.textContent = 'Thank you for subscribing! ✅';
+      formMessage!.className = 'text-center text-sm font-medium text-green-600 dark:text-green-400 mt-4';
+      formMessage!.classList.remove('hidden');
+      form.reset();
+      submitBtn.disabled = true;
+      setTimeout(() => modal.close(), 3000);
     }
+
+    // Reset button
+    btnText!.textContent = 'Subscribe Now';
+    btnLoader!.classList.add('hidden');
+    if (!error) return;
+    submitBtn.disabled = false;
   });
 
-  // Export open function to window
+  // Expose opener globally
   (window as any).openNewsletterModal = () => {
+    formMessage?.classList.add('hidden');
     modal.showModal();
   };
 </script>
