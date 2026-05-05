@@ -19,10 +19,11 @@
     "check:prettier": "prettier --check .",
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix .",
-    "fix:prettier": "prettier -w ."
+    "fix:prettier": "prettier -w .",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.3.0",
+    "@astrojs/cloudflare": "^13.3.1",
     "@astrojs/node": "^10.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
@@ -35,7 +36,8 @@
     "limax": "4.2.3",
     "lodash.merge": "^4.6.2",
     "resend": "^6.12.2",
-    "unpic": "^4.2.2"
+    "unpic": "^4.2.2",
+    "wrangler": "^4.88.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -69,5 +71,8 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.1",
     "unist-util-visit": "^5.1.0"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
